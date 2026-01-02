@@ -10,7 +10,7 @@ function Products () {
         const baseURL = isDevelopment
           ? process.env.REACT_APP_API_BASE_URL_LOCAL
           : process.env.REACT_APP_API_BASE_URL_PROD;
-        axios.get (`${baseURL}/product/`)
+        axios.get (`${baseURL}product/`)
         .then (res => setProducts (res.data))
         .catch (err => console.error (err));
     }, []);
