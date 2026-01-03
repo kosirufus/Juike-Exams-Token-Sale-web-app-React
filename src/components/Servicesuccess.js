@@ -53,7 +53,7 @@ export default function ServiceSuccess() {
       ? process.env.REACT_APP_API_BASE_URL_LOCAL
       : process.env.REACT_APP_API_BASE_URL_PROD;
       const res = await axios.get(
-        `${baseURL}whatsapp-redirect/${orderData.whatsapp_button_token}/?group=${groupId}`
+        `${baseURL}/api/whatsapp-redirect/${orderData.whatsapp_button_token}/?group=${groupId}`
       );
 
       if (res.data?.url) {
