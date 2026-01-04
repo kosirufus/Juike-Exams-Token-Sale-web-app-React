@@ -21,7 +21,7 @@ export default function OrderFormPage() {
     const baseURL = isDevelopment
       ? process.env.REACT_APP_API_BASE_URL_LOCAL
       : process.env.REACT_APP_API_BASE_URL_PROD;
-    axios.get(`${baseURL}/api/subjects/`)  // endpoint returning all subjects
+    axios.get(`${baseURL}api/subjects/`)  // endpoint returning all subjects
       .then(res => setSubjects(res.data))
       .catch(err => console.error(err));
   }, []);

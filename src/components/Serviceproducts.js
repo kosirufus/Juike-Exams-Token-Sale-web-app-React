@@ -13,7 +13,7 @@ export default function ServiceProducts() {
     const baseURL = isDevelopment
       ? process.env.REACT_APP_API_BASE_URL_LOCAL
       : process.env.REACT_APP_API_BASE_URL_PROD;
-    axios.get(`${baseURL}/api/serviceproducts/`)
+    axios.get(`${baseURL}api/serviceproducts/`)
       .then(res => {
         setProducts(res.data);
         setLoading(false);
