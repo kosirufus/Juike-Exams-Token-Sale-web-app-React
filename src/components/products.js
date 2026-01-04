@@ -14,7 +14,7 @@ function Products() {
 
     // Fetch products
     axios
-      .get(`${baseURL}/product/`) // add leading slash
+      .get(`${baseURL}/product/`) 
       .then((res) => setProducts(res.data))
       .catch((err) => console.error(err));
   }, []);

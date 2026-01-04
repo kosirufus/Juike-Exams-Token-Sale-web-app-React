@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
+import axios from "axios"; 
 
 export default function ServiceSuccess() {
   const location = useLocation();
@@ -12,6 +12,12 @@ export default function ServiceSuccess() {
   const [error, setError] = useState(null);
   const [groupMessage, setGroupMessage] = useState({}); // { [groupId]: message }
 
+  // Determine backend URL
+  const isDevelopment = process.env.NODE_ENV === "development";
+  const baseURL = isDevelopment
+    ? "http://localhost:8000" // local backend
+    : "https://juike-exams-token-sale-web-app-django.onrender.com"; // production backend
+
   useEffect(() => {
     if (!reference) {
       setError("No payment reference found");
@@ -21,13 +27,7 @@ export default function ServiceSuccess() {
 
     const fetchOrderSuccess = async () => {
       try {
-        const isDevelopment = process.env.NODE_ENV === 'development'
-        const baseURL = isDevelopment
-          ? process.env.REACT_APP_API_BASE_URL_LOCAL
-          : process.env.REACT_APP_API_BASE_URL_PROD;
-        const res = await axios.get(
-          `${baseURL}servicesuccess/${reference}/`
-        );
+        const res = await axios.get(`${baseURL}/servicesuccess/${reference}/`);
         setOrderData(res.data);
       } catch (err) {
         console.error(err);
@@ -38,7 +38,7 @@ export default function ServiceSuccess() {
     };
 
     fetchOrderSuccess();
-  }, [reference]);
+  }, [reference, baseURL]);
 
   // Handle WhatsApp group join
   const handleJoinGroup = async (groupId) => {
@@ -48,12 +48,8 @@ export default function ServiceSuccess() {
     }
 
     try {
-    const isDevelopment = process.env.NODE_ENV === 'development'
-    const baseURL = isDevelopment
-      ? process.env.REACT_APP_API_BASE_URL_LOCAL
-      : process.env.REACT_APP_API_BASE_URL_PROD;
       const res = await axios.get(
-        `${baseURL}api/whatsapp-redirect/${orderData.whatsapp_button_token}/?group=${groupId}`
+        `${baseURL}/api/whatsapp-redirect/${orderData.whatsapp_button_token}/?group=${groupId}`
       );
 
       if (res.data?.url) {

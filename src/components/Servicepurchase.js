@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "../api/axios";
+import axios from "axios"; // use plain axios
 
 export default function OrderFormPage() {
   const location = useLocation();
@@ -14,21 +14,23 @@ export default function OrderFormPage() {
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
+  // Determine backend URL
+  const isDevelopment = process.env.NODE_ENV === "development";
+  const baseURL = isDevelopment
+    ? "http://localhost:8000" // local backend
+    : "https://juike-exams-token-sale-web-app-django.onrender.com"; // production backend
 
   // Fetch subjects from backend
   useEffect(() => {
-    const isDevelopment = process.env.NODE_ENV === 'development'
-    const baseURL = isDevelopment
-      ? process.env.REACT_APP_API_BASE_URL_LOCAL
-      : process.env.REACT_APP_API_BASE_URL_PROD;
-    axios.get(`${baseURL}api/subjects/`)  // endpoint returning all subjects
-      .then(res => setSubjects(res.data))
-      .catch(err => console.error(err));
-  }, []);
+    axios
+      .get(`${baseURL}/api/subjects/`) // endpoint returning all subjects
+      .then((res) => setSubjects(res.data))
+      .catch((err) => console.error(err));
+  }, [baseURL]);
 
   const toggleSubject = (subjectId) => {
     if (selectedSubjects.includes(subjectId)) {
-      setSelectedSubjects(selectedSubjects.filter(id => id !== subjectId));
+      setSelectedSubjects(selectedSubjects.filter((id) => id !== subjectId));
     } else {
       if (selectedSubjects.length < 9) {
         setSelectedSubjects([...selectedSubjects, subjectId]);
@@ -47,16 +49,12 @@ export default function OrderFormPage() {
 
     setLoading(true);
     try {
-    const isDevelopment = process.env.NODE_ENV === 'development'
-    const baseURL = isDevelopment
-      ? process.env.REACT_APP_API_BASE_URL_LOCAL
-      : process.env.REACT_APP_API_BASE_URL_PROD;
-      const response = await axios.post(`${baseURL}pay/`, {
+      const response = await axios.post(`${baseURL}/pay/`, {
         full_name: fullName,
         email,
         student_class: studentClass,
         product_ids: productIds,
-        subject_ids: selectedSubjects
+        subject_ids: selectedSubjects,
       });
 
       window.location.href = response.data.authorization_url;
@@ -69,77 +67,74 @@ export default function OrderFormPage() {
   };
 
   return (
-  <div className="hero">
-    <div className="hero-content">
+    <div className="hero">
+      <div className="hero-content">
+        <div className="form-container">
+          <h2 style={{ color: "green" }}>Complete Your Order</h2>
 
-      <div className="form-container">
-        <h2 style={{color: "green"}}>Complete Your Order</h2>
+          <form onSubmit={handleSubmit}>
+            <label>Full Name:</label>
+            <input
+              type="text"
+              placeholder="Enter Full Name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
 
-        <form onSubmit={handleSubmit}>
-          <label>Full Name:</label>
-          <input
-            type="text"
-            placeholder="Enter Full Name"
-            value={fullName}
-            onChange={e => setFullName(e.target.value)}
-            required
-          />
+            <label>Email:</label>
+            <input
+              type="email"
+              placeholder="Enter valid email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
-          <label>Email:</label>
-          <input
-            type="email"
-            placeholder="Enter valid email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-          />
+            <label>Class:</label>
+            <select
+              value={studentClass}
+              onChange={(e) => setStudentClass(e.target.value)}
+            >
+              <option value="science">Science</option>
+              <option value="art">Art</option>
+            </select>
 
-          <label>Class:</label>
-          <select
-            value={studentClass}
-            onChange={e => setStudentClass(e.target.value)}
-          >
-            <option value="science">Science</option>
-            <option value="art">Art</option>
-          </select>
+            <label>Select 9 Subjects:</label>
 
-          <label>Select 9 Subjects:</label>
-
-          <div className={`subject-wrapper ${expanded ? "expanded" : ""}`}>
-            <div className="subject-grid">
-              {subjects.map(sub => (
-                <button
-                  type="button"
-                  key={sub.id}
-                  className={
-                    selectedSubjects.includes(sub.id)
-                      ? "subject-btn selected"
-                      : "subject-btn"
-                  }
-                  onClick={() => toggleSubject(sub.id)}
-                >
-                  {sub.name}
-                </button>
-              ))}
+            <div className={`subject-wrapper ${expanded ? "expanded" : ""}`}>
+              <div className="subject-grid">
+                {subjects.map((sub) => (
+                  <button
+                    type="button"
+                    key={sub.id}
+                    className={
+                      selectedSubjects.includes(sub.id)
+                        ? "subject-btn selected"
+                        : "subject-btn"
+                    }
+                    onClick={() => toggleSubject(sub.id)}
+                  >
+                    {sub.name}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <button
-            type="button"
-            className="toggle-btn"
-            onClick={() => setExpanded(!expanded)}
-          >
-            {expanded ? "Show less" : "Show more"}
-          </button>
+            <button
+              type="button"
+              className="toggle-btn"
+              onClick={() => setExpanded(!expanded)}
+            >
+              {expanded ? "Show less" : "Show more"}
+            </button>
 
-
-          <button type="submit" disabled={loading}>
-            {loading ? "Processing..." : "Continue to Pay"}
-          </button>
-        </form>
+            <button type="submit" disabled={loading}>
+              {loading ? "Processing..." : "Continue to Pay"}
+            </button>
+          </form>
+        </div>
       </div>
-
     </div>
-  </div>
-);
+  );
 }

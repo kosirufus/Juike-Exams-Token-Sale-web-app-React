@@ -12,15 +12,18 @@ export default function LinkSecurity() {
   useEffect(() => {
     async function verifyToken() {
       try {
-        //const myApiBaseUrl = 'http://localhost:8000/api/'; 
-        const isDevelopment = process.env.NODE_ENV === 'development'
+        // Determine backend URL based on environment
+        const isDevelopment = process.env.NODE_ENV === "development";
         const baseURL = isDevelopment
-          ? process.env.REACT_APP_API_BASE_URL_LOCAL
-          : process.env.REACT_APP_API_BASE_URL_PROD;
+          ? "http://localhost:8000" // local backend
+          : "https://juike-exams-token-sale-web-app-django.onrender.com"; // production backend
+
         const res = await axios.get(
-          `${baseURL}whatsapp-redirect/${token}/?group=${groupId}`
+          `${baseURL}/whatsapp-redirect/${token}/?group=${groupId}`
         );
+
         const { redirectUrl, alreadyJoined } = res.data;
+
         if (redirectUrl && !alreadyJoined) {
           setStatus("redirecting");
           window.location.href = redirectUrl;
