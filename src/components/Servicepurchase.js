@@ -49,7 +49,7 @@ export default function OrderFormPage() {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${baseURL}/pay/`, {
+      const response = await axios.post(`${baseURL}/api/pay/`, {
         full_name: fullName,
         email,
         student_class: studentClass,
