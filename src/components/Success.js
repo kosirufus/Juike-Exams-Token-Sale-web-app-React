@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import axios from "axios";
+import axios from "axios"; // use plain axios
 
 export default function PurchaseSuccess() {
   const [searchParams] = useSearchParams();
@@ -9,47 +9,43 @@ export default function PurchaseSuccess() {
   const [assignedTokens, setAssignedTokens] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Determine backend URL dynamically
+  // Determine backend URL
   const isDevelopment = process.env.NODE_ENV === "development";
   const baseURL = isDevelopment
-    ? process.env.REACT_APP_API_BASE_URL_LOCAL
-    : process.env.REACT_APP_API_BASE_URL_PROD;
+    ? "http://localhost:8000" // local backend
+    : "https://juike-exams-token-sale-web-app-django.onrender.com"; // production backend
 
-  // Verify payment ONCE
+  //Verify payment ONCE
   useEffect(() => {
     if (!reference) return;
 
-    const verifyPayment = async () => {
-      try {
-        // Ensure no double slashes
-        const url = `${baseURL.replace(/\/$/, "")}/api/verify-paystack/?reference=${reference}`;
-        const res = await axios.get(url);
-        console.log("Payment verified:", res.data);
-      } catch (err) {
+    axios
+      .get(`${baseURL}/api/verify-paystack/?reference=${reference}/`)
+      .then((res) => {
+        console.log("Payment verified");
+      })
+      .catch((err) => {
         console.error("Verification failed:", err);
-      }
-    };
-
-    verifyPayment();
+      });
   }, [reference, baseURL]);
 
-  // Poll assigned tokens
+  //Poll assigned tokens
   useEffect(() => {
     if (!reference) return;
 
-    const interval = setInterval(async () => {
-      try {
-        const url = `${baseURL.replace(/\/$/, "")}/api/assigned-tokens/?reference=${reference}`;
-        const res = await axios.get(url);
-
-        if (res.data.length > 0) {
-          setAssignedTokens(res.data);
-          setLoading(false);
-          clearInterval(interval);
-        }
-      } catch (err) {
-        console.error("Fetching tokens failed:", err);
-      }
+    const interval = setInterval(() => {
+      axios
+        .get(`${baseURL}/api/assigned-tokens/?reference=${reference}`)
+        .then((res) => {
+          if (res.data.length > 0) {
+            setAssignedTokens(res.data);
+            setLoading(false);
+            clearInterval(interval);
+          }
+        })
+        .catch((err) => {
+          console.error("Fetching tokens failed:", err);
+        });
     }, 3000);
 
     return () => clearInterval(interval);
