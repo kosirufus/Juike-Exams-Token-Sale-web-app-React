@@ -27,7 +27,7 @@ export default function ServiceSuccess() {
 
     const fetchOrderSuccess = async () => {
       try {
-        const res = await axios.get(`${baseURL}/servicesuccess/${reference}/`);
+        const res = await axios.get(`${baseURL}/api/servicesuccess/${reference}/`);
         setOrderData(res.data);
       } catch (err) {
         console.error(err);
