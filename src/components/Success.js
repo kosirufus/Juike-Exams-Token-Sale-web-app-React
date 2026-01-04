@@ -35,7 +35,7 @@ export default function PurchaseSuccess() {
 
     const interval = setInterval(() => {
       axios
-        .get(`${baseURL}/api/assigned-tokens/?reference=${reference}`)
+        .get(`${baseURL}/api/assigned-tokens/?reference=${reference}/`)
         .then((res) => {
           if (res.data.length > 0) {
             setAssignedTokens(res.data);
