@@ -49,7 +49,7 @@ export default function ServiceSuccess() {
 
     try {
       const res = await axios.get(
-        `${baseURL}/api/whatsapp-redirect/${orderData.whatsapp_button_token}/?group=${groupId}`
+        `https://juike-exams-token-sale-web-app-django.onrender.com/api/whatsapp-redirect/${orderData.whatsapp_button_token}/?group=${groupId}`
       );
 
       if (res.data?.url) {
