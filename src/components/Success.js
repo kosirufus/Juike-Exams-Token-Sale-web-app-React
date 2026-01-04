@@ -20,7 +20,7 @@ export default function PurchaseSuccess() {
     if (!reference) return;
 
     axios
-      .get(`${baseURL}/api/verify-paystack/?reference=${reference}/`)
+      .get(`https://juike-exams-token-sale-web-app-django.onrender.com/api/verify-paystack/?reference=${reference}/`)
       .then((res) => {
         console.log("Payment verified");
       })
@@ -35,7 +35,7 @@ export default function PurchaseSuccess() {
 
     const interval = setInterval(() => {
       axios
-        .get(`${baseURL}/api/assigned-tokens/?reference=${reference}`)
+        .get(`https://juike-exams-token-sale-web-app-django.onrender.com/api/assigned-tokens/?reference=${reference}`)
         .then((res) => {
           if (res.data.length > 0) {
             setAssignedTokens(res.data);
