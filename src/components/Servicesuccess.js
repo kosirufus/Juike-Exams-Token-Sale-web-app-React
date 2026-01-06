@@ -4,30 +4,28 @@ import axios from "axios";
 
 export default function ServiceSuccess() {
   const location = useLocation();
-  const query = new URLSearchParams(location.search);
-  const reference = query.get("reference");
+
+  // Extract reference from path instead of query params
+  const pathnameParts = location.pathname.split('/');
+  const reference = pathnameParts[pathnameParts.length - 1] || pathnameParts[pathnameParts.length - 2];
 
   const [orderData, setOrderData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [groupMessage, setGroupMessage] = useState({}); // { [groupId]: message }
 
-  // Determine backend URL
-  const isDevelopment = process.env.NODE_ENV === "development";
-  const baseURL = isDevelopment
-    ? "http://localhost:8000" // local backend
-    : "https://juike-exams-token-sale-web-app-django.onrender.com"; // production backend
-
   useEffect(() => {
     if (!reference) {
-      setError("No payment reference found");
+      setError("No payment reference found in URL");
       setLoading(false);
       return;
     }
 
     const fetchOrderSuccess = async () => {
       try {
-        const res = await axios.get(`https://juike-exams-token-sale-web-app-django.onrender.com/servicesuccess/${reference}/`);
+        const res = await axios.get(
+          `https://juike-exams-token-sale-web-app-django.onrender.com/servicesuccess/${reference}/`
+        );
         setOrderData(res.data);
       } catch (err) {
         console.error(err);
@@ -38,7 +36,7 @@ export default function ServiceSuccess() {
     };
 
     fetchOrderSuccess();
-  }, [reference, baseURL]);
+  }, [reference]);
 
   // Handle WhatsApp group join
   const handleJoinGroup = async (groupId) => {
@@ -53,7 +51,6 @@ export default function ServiceSuccess() {
       );
 
       if (res.data?.url) {
-        // Open WhatsApp in a new tab
         window.open(res.data.url, "_blank");
       }
     } catch (err) {
