@@ -24,7 +24,7 @@ export default function ServiceSuccess() {
     const fetchOrderSuccess = async () => {
       try {
         const res = await axios.get(
-          `https://juike-exams-token-sale-web-app-django.onrender.com/servicesuccess/${reference}`
+          `https://juike-exams-token-sale-web-app-django.onrender.com/api/servicesuccess/${reference}`
         );
         setOrderData(res.data);
       } catch (err) {
@@ -47,7 +47,7 @@ export default function ServiceSuccess() {
 
     try {
       const res = await axios.get(
-        `https://juike-exams-token-sale-web-app-django.onrender.com/whatsapp-redirect/${orderData.whatsapp_button_token}/?group=${groupId}`
+        `https://juike-exams-token-sale-web-app-django.onrender.com/api/whatsapp-redirect/${orderData.whatsapp_button_token}/?group=${groupId}`
       );
 
       if (res.data?.url) {
