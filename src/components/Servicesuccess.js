@@ -24,7 +24,7 @@ export default function ServiceSuccess() {
     const fetchOrderSuccess = async () => {
       try {
         const res = await axios.get(
-          `https://juike-exams-token-sale-web-app-django.onrender.com/api/servicesuccess/${reference}`
+          `https://juike-exams-token-sale-web-app-django.onrender.com/api/servicesuccess/${reference}/`
         );
         setOrderData(res.data);
       } catch (err) {
